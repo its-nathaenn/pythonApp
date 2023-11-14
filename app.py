@@ -45,13 +45,17 @@ def formDemo():
     if request.method == 'POST':
         if request.form['name']:
             name=request.form['name']
-            # Add Visitor to the database
-            visitor = Visitor(username = name)
-            db.session.add(visitor)
+            # Check if user is in database
+            visitor = Visitor.query.get(name)
+            if visitor == None:
+                # Add Visitor to the database
+                visitor = Visitor(username = name)
+                db.session.add(visitor)
+            else:
+                visitor.numVisits += 1
         
-        # commit changes to the database
-        db.session.commit()
-
+            # commit changes to the database
+            db.session.commit()
     return render_template('form.html', name=name)
 
 
